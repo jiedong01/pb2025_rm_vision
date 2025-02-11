@@ -1,0 +1,51 @@
+armor_detector:
+  ros__parameters:
+    use_sim_time: true
+    debug: true
+    camera_name: "front_industrial_camera"
+
+    detect_color: 0
+    binary_thres: 80
+
+    light.min_ratio: 0.1
+    armor.min_light_ratio: 0.8
+
+    classifier_threshold: 0.25
+    ignore_classes: ["negative"]
+
+armor_tracker:
+  ros__parameters:
+    target_frame: chassis
+    max_armor_distance: 10.0
+
+    ekf:
+      sigma2_q_xyz_max: 3.0
+      sigma2_q_xyz_min: 1.0
+      sigma2_q_yaw_max: 6.0
+      sigma2_q_yaw_min: 3.0
+      sigma2_q_r: 40.0
+
+      r_xyz_factor: 0.0006
+      r_yaw: 0.008
+
+    tracker:
+      max_match_distance: 0.5
+      max_match_yaw_diff: 0.8
+
+      tracking_thres: 5
+      lost_time_thres: 1.0
+
+projectile_motion:
+  ros__parameters:
+    use_sim_time: true
+    projectile:
+      offset_pitch: 0.0
+      offset_yaw: 0.0
+      offset_time: 0.07
+      initial_speed: 18.0
+      target_frame: "gimbal_pitch"              # gimbal frame_id
+      target_topic: "tracker/target"
+      gimbal_cmd_topic: "cmd_gimbal_joint"
+      shoot_data_topic: "robot_shoot_data"
+      solver_type: "gravity"                    # projectile solve method: gravity / gaf
+      # friction: 0.001                         # Air resistance factor if use GAF solver
