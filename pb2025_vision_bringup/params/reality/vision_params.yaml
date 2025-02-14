@@ -30,7 +30,7 @@ armor_detector:
 armor_detector_openvino:
   ros__parameters:
     use_sim_time: true
-    use_sensor_data_qos: false
+    use_sensor_data_qos: true
     debug_mode: false
     detect_color: 0
 
