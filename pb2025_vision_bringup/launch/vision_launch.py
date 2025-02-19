@@ -139,9 +139,9 @@ def generate_launch_description():
                 arguments=["--ros-args", "--log-level", log_level],
             ),
             Node(
-                package="armor_tracker",
-                executable="armor_tracker_node",
-                name="armor_tracker",
+                package="armor_tracker_zhengyu",
+                executable="armor_tracker_zhengyu_node",
+                name="armor_tracker_zhengyu",
                 output="screen",
                 respawn=use_respawn,
                 respawn_delay=2.0,

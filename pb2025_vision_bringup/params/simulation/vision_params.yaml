@@ -37,6 +37,26 @@ armor_tracker:
     max_armor_distance: 10.0
 
     ekf:
+      sigma2_q_xyz: 0.05
+      sigma2_q_yaw: 5.0
+      sigma2_q_r: 80.0
+
+      r_xyz_factor: 0.0004
+      r_yaw: 0.003
+
+    tracker:
+      max_match_distance: 0.5
+      max_match_yaw_diff: 1.0
+
+      tracking_thres: 5
+      lost_time_thres: 1.0
+
+armor_tracker_zhengyu:
+  ros__parameters:
+    target_frame: chassis
+    max_armor_distance: 15.0
+
+    ekf:
       sigma2_q_xyz_max: 3.0
       sigma2_q_xyz_min: 1.0
       sigma2_q_yaw_max: 6.0

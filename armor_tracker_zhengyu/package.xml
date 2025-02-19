@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>armor_tracker</name>
+  <name>armor_tracker_zhengyu</name>
   <version>2.0.0</version>
   <description>RoboMaster armor tracker.</description>
   <maintainer email="defateyz@gmail.com">Zheng Yu</maintainer>
