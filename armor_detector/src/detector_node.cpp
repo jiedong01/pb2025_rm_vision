@@ -276,7 +276,7 @@ void ArmorDetectorNode::destroyDebugPublishers()
 void ArmorDetectorNode::publishMarkers()
 {
   using Marker = visualization_msgs::msg::Marker;
-  armor_marker_.action = armors_msg_.armors.empty() ? Marker::DELETE : Marker::ADD;
+  armor_marker_.action = armors_msg_.armors.empty() ? Marker::DELETEALL : Marker::ADD;
   marker_array_.markers.emplace_back(armor_marker_);
   marker_pub_->publish(marker_array_);
 }
