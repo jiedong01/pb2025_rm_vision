@@ -30,6 +30,7 @@
 #include "tf2_ros/buffer.h"
 #include "tf2_ros/message_filter.h"
 #include "tf2_ros/transform_listener.h"
+#include "visualization_msgs/msg/marker.hpp"
 
 namespace projectile_motion
 {
@@ -52,6 +53,7 @@ private:
   bool getCurrentGimbalAngle(
     const std::string & frame_id, const rclcpp::Time & stamp, double & cur_roll, double & cur_pitch,
     double & cur_yaw);
+  void publishHitYawMarker(double hit_yaw);
 
 private:
   double offset_x_;
@@ -82,6 +84,8 @@ private:
   std::shared_ptr<tf2_ros::Buffer> tf_buffer_;
   std::shared_ptr<tf2_ros::TransformListener> tf_listener_;
   std::shared_ptr<tf2_filter> tf_filter_;
+
+  rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr aiming_marker_publisher_;
 };
 
 }  // namespace projectile_motion

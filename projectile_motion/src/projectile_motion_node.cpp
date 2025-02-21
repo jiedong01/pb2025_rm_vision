@@ -17,8 +17,9 @@
 
 #include "rmoss_projectile_motion/gaf_projectile_solver.hpp"
 #include "rmoss_projectile_motion/gravity_projectile_solver.hpp"
+#include "tf2/utils.h"
+#include "tf2_geometry_msgs/tf2_geometry_msgs.hpp"
 #include "tf2_ros/create_timer_ros.h"
-
 namespace projectile_motion
 {
 
@@ -64,6 +65,8 @@ ProjectileMotionNode::ProjectileMotionNode(rclcpp::NodeOptions options)
     this->create_publisher<sensor_msgs::msg::JointState>(gimbal_cmd_topic_, 10);
   shoot_cmd_publisher_ =
     this->create_publisher<example_interfaces::msg::UInt8>(shoot_cmd_topic_, 10);
+  aiming_marker_publisher_ =
+    this->create_publisher<visualization_msgs::msg::Marker>("aiming_marker", 10);
 
   tf_buffer_ = std::make_shared<tf2_ros::Buffer>(this->get_clock(), tf2::durationFromSec(10.0));
   // Create the timer interface before call to waitForTransform,
@@ -169,6 +172,7 @@ void ProjectileMotionNode::calculateTargetPosition(
       min_dis = target_predict_position.head(2).norm();
       hit_yaw = target_yaw;
       hit_pitch = target_pitch;
+      publishHitYawMarker(hit_yaw);
     }
   }
 }
@@ -184,6 +188,32 @@ void ProjectileMotionNode::publishGimbalCommand(double hit_pitch, double hit_yaw
     shoot_cmd.data = shoot;
     shoot_cmd_publisher_->publish(shoot_cmd);
   }
+}
+
+void ProjectileMotionNode::publishHitYawMarker(double hit_yaw)
+{
+  visualization_msgs::msg::Marker marker;
+  marker.header.frame_id = "chassis";
+  marker.header.stamp = this->now();
+  marker.ns = "hit_yaw";
+  marker.id = 0;
+  marker.type = visualization_msgs::msg::Marker::ARROW;
+  marker.action = visualization_msgs::msg::Marker::ADD;
+  marker.pose.position.x = 0;
+  marker.pose.position.y = 0;
+  marker.pose.position.z = -offset_z_;
+  tf2::Quaternion q;
+  q.setRPY(0, 0, hit_yaw);
+  marker.pose.orientation = tf2::toMsg(q);
+  marker.scale.x = 5.0;
+  marker.scale.y = 0.02;
+  marker.scale.z = 0.02;
+  marker.color.a = 1.0;
+  marker.color.r = 1.0;
+  marker.color.g = 0.0;
+  marker.color.b = 0.0;
+
+  aiming_marker_publisher_->publish(marker);
 }
 
 }  // namespace projectile_motion
