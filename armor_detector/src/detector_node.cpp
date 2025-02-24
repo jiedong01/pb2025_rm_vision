@@ -245,7 +245,7 @@ std::vector<Armor> ArmorDetectorNode::detectArmors(
     auto latency_s = latency_ss.str();
     cv::putText(
       img, latency_s, cv::Point(10, 30), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 255, 0), 2);
-    result_img_pub_.publish(cv_bridge::CvImage(img_msg->header, "rgb8", img).toImageMsg());
+    debug_img_pub_.publish(cv_bridge::CvImage(img_msg->header, "rgb8", img).toImageMsg());
   }
 
   return armors;
@@ -260,7 +260,7 @@ void ArmorDetectorNode::createDebugPublishers()
 
   binary_img_pub_ = image_transport::create_publisher(this, "detector/binary_img");
   number_img_pub_ = image_transport::create_publisher(this, "detector/number_img");
-  result_img_pub_ = image_transport::create_publisher(this, "detector/result_img");
+  debug_img_pub_ = image_transport::create_publisher(this, "detector/debug_img");
 }
 
 void ArmorDetectorNode::destroyDebugPublishers()
@@ -270,7 +270,7 @@ void ArmorDetectorNode::destroyDebugPublishers()
 
   binary_img_pub_.shutdown();
   number_img_pub_.shutdown();
-  result_img_pub_.shutdown();
+  debug_img_pub_.shutdown();
 }
 
 void ArmorDetectorNode::publishMarkers()
