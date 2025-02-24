@@ -172,7 +172,7 @@ void ProjectileMotionNode::calculateTargetPosition(
       min_dis = target_predict_position.head(2).norm();
       hit_yaw = target_yaw;
       hit_pitch = target_pitch;
-      publishHitYawMarker(hit_yaw);
+      publishHitYawMarker(hit_yaw, hit_pitch);
     }
   }
 }
@@ -190,7 +190,7 @@ void ProjectileMotionNode::publishGimbalCommand(double hit_pitch, double hit_yaw
   }
 }
 
-void ProjectileMotionNode::publishHitYawMarker(double hit_yaw)
+void ProjectileMotionNode::publishHitYawMarker(double hit_yaw, double hit_pitch)
 {
   visualization_msgs::msg::Marker marker;
   marker.header.frame_id = "chassis";
@@ -203,7 +203,7 @@ void ProjectileMotionNode::publishHitYawMarker(double hit_yaw)
   marker.pose.position.y = 0;
   marker.pose.position.z = -offset_z_;
   tf2::Quaternion q;
-  q.setRPY(0, 0, hit_yaw);
+  q.setRPY(hit_pitch, 0, hit_yaw);
   marker.pose.orientation = tf2::toMsg(q);
   marker.scale.x = 5.0;
   marker.scale.y = 0.02;
