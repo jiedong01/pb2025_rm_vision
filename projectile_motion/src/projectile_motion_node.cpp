@@ -134,12 +134,13 @@ void ProjectileMotionNode::calculateTargetPosition(
   const auto_aim_interfaces::msg::Target::SharedPtr & msg, const Eigen::Vector3d & center_position,
   const Eigen::Vector3d & center_velocity, double cur_yaw, double & hit_yaw, double & hit_pitch)
 {
-  double min_yaw = DBL_MAX, min_dis = DBL_MAX;
   bool is_current_pair = true;
   double r = 0., target_dz = 0., fly_time = 0.;
   double target_pitch, target_yaw;
   Eigen::Vector3d target_position, target_predict_position;
+  std::vector<std::pair<double, int>> distances;
 
+  // First pass: calculate distances and store them with their indices
   for (int i = 0; i < msg->armors_num; ++i) {
     double tmp_yaw = msg->yaw + i * (2 * M_PI / msg->armors_num);
 
@@ -160,21 +161,41 @@ void ProjectileMotionNode::calculateTargetPosition(
       center_position + center_velocity * fly_time +
       Eigen::Vector3d(-r * std::cos(tmp_yaw), -r * std::sin(tmp_yaw), target_dz);
 
-    solver_->solve(
-      target_predict_position.head(2).norm(), target_predict_position.z(), target_pitch);
-    target_pitch = -target_pitch;
-    target_yaw = std::atan2(target_predict_position.y(), target_predict_position.x());
-
-    if (
-      std::abs(std::fmod(tmp_yaw, M_PI) - cur_yaw) < min_yaw &&
-      target_predict_position.head(2).norm() < min_dis) {
-      min_yaw = std::abs(std::fmod(tmp_yaw, M_PI) - cur_yaw);
-      min_dis = target_predict_position.head(2).norm();
-      hit_yaw = target_yaw;
-      hit_pitch = target_pitch;
-      publishHitYawMarker(hit_yaw, hit_pitch);
-    }
+    double distance = target_predict_position.head(2).norm();
+    distances.push_back(std::make_pair(distance, i));
   }
+
+  // Find the index of the minimum distance
+  auto min_distance_it = std::min_element(distances.begin(), distances.end());
+  int min_index = min_distance_it->second;
+
+  // Second pass: calculate target_pitch and target_yaw for the minimum distance
+  double tmp_yaw = msg->yaw + min_index * (2 * M_PI / msg->armors_num);
+
+  if (msg->armors_num == 4) {
+    r = (min_index % 2 == 0) ? msg->radius_1 : msg->radius_2;
+    target_dz = (min_index % 2 == 0) ? 0. : msg->dz;
+  } else {
+    r = msg->radius_1;
+    target_dz = 0.;
+  }
+
+  target_position =
+    center_position + Eigen::Vector3d(-r * std::cos(tmp_yaw), -r * std::sin(tmp_yaw), target_dz);
+  fly_time = target_position.head(2).norm() / shoot_speed_ + offset_time_;
+  tmp_yaw += msg->v_yaw * fly_time;
+  target_predict_position =
+    center_position + center_velocity * fly_time +
+    Eigen::Vector3d(-r * std::cos(tmp_yaw), -r * std::sin(tmp_yaw), target_dz);
+
+  solver_->solve(target_predict_position.head(2).norm(), target_predict_position.z(), target_pitch);
+  target_pitch = -target_pitch;
+  target_yaw = std::atan2(target_predict_position.y(), target_predict_position.x());
+
+  hit_yaw = target_yaw;
+  hit_pitch = target_pitch;
+
+  publishHitYawMarker(hit_yaw, hit_pitch);
 }
 
 void ProjectileMotionNode::publishGimbalCommand(double hit_pitch, double hit_yaw, uint8_t shoot)
