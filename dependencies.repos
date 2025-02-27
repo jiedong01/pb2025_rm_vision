@@ -17,3 +17,6 @@ repositories:
   auto_aim_interfaces:
     type: git
     url: https://github.com/SMBU-PolarBear-Robotics-Team/auto_aim_interfaces.git
+  pb_rm_interfaces:
+    url: https://github.com/SMBU-PolarBear-Robotics-Team/pb_rm_interfaces.git
+    version: main

@@ -17,9 +17,9 @@
 
 #include "rmoss_projectile_motion/gaf_projectile_solver.hpp"
 #include "rmoss_projectile_motion/gravity_projectile_solver.hpp"
-#include "tf2/utils.h"
 #include "tf2_geometry_msgs/tf2_geometry_msgs.hpp"
 #include "tf2_ros/create_timer_ros.h"
+
 namespace projectile_motion
 {
 
@@ -62,7 +62,7 @@ ProjectileMotionNode::ProjectileMotionNode(rclcpp::NodeOptions options)
   }
 
   gimbal_cmd_publisher_ =
-    this->create_publisher<sensor_msgs::msg::JointState>(gimbal_cmd_topic_, 10);
+    this->create_publisher<pb_rm_interfaces::msg::GimbalCmd>(gimbal_cmd_topic_, 10);
   shoot_cmd_publisher_ =
     this->create_publisher<example_interfaces::msg::UInt8>(shoot_cmd_topic_, 10);
   aiming_marker_publisher_ =
@@ -179,15 +179,19 @@ void ProjectileMotionNode::calculateTargetPosition(
 
 void ProjectileMotionNode::publishGimbalCommand(double hit_pitch, double hit_yaw, uint8_t shoot)
 {
-  sensor_msgs::msg::JointState gimbal_cmd;
-  gimbal_cmd.name = {"gimbal_pitch_joint", "gimbal_yaw_joint"};
-  gimbal_cmd.position = {hit_pitch + offset_pitch_, hit_yaw + offset_yaw_};
+  pb_rm_interfaces::msg::GimbalCmd gimbal_cmd;
+  example_interfaces::msg::UInt8 shoot_cmd;
+  gimbal_cmd.header.stamp = this->now();
+  gimbal_cmd.pitch_type = pb_rm_interfaces::msg::GimbalCmd::ABSOLUTE_ANGLE;
+  gimbal_cmd.yaw_type = pb_rm_interfaces::msg::GimbalCmd::ABSOLUTE_ANGLE;
+  gimbal_cmd.position.pitch = hit_pitch + offset_pitch_;
+  gimbal_cmd.position.yaw = hit_yaw + offset_yaw_;
+
   gimbal_cmd_publisher_->publish(gimbal_cmd);
-  if (abs(hit_pitch - cur_pitch_) < 0.1 && abs(hit_yaw - cur_yaw_) < 0.1) {
-    example_interfaces::msg::UInt8 shoot_cmd;
-    shoot_cmd.data = shoot;
-    shoot_cmd_publisher_->publish(shoot_cmd);
-  }
+
+  shoot_cmd.data =
+    (fabs(hit_pitch - cur_pitch_) < 0.1 && fabs(hit_yaw - cur_yaw_) < 0.1) ? shoot : 0;
+  shoot_cmd_publisher_->publish(shoot_cmd);
 }
 
 void ProjectileMotionNode::publishHitYawMarker(double hit_yaw, double hit_pitch)
@@ -203,7 +207,7 @@ void ProjectileMotionNode::publishHitYawMarker(double hit_yaw, double hit_pitch)
   marker.pose.position.y = 0;
   marker.pose.position.z = -offset_z_;
   tf2::Quaternion q;
-  q.setRPY(hit_pitch, 0, hit_yaw);
+  q.setRPY(0, hit_pitch, hit_yaw);
   marker.pose.orientation = tf2::toMsg(q);
   marker.scale.x = 5.0;
   marker.scale.y = 0.02;

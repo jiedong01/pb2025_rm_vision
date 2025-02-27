@@ -23,6 +23,7 @@
 #include "auto_aim_interfaces/msg/target.hpp"
 #include "example_interfaces/msg/u_int8.hpp"
 #include "message_filters/subscriber.h"
+#include "pb_rm_interfaces/msg/gimbal_cmd.hpp"
 #include "rclcpp/rclcpp.hpp"
 #include "rmoss_projectile_motion/gimbal_transform_tool.hpp"
 #include "rmoss_projectile_motion/projectile_solver_interface.hpp"
@@ -77,7 +78,7 @@ private:
 
   std::shared_ptr<rmoss_projectile_motion::ProjectileSolverInterface> solver_;
   rclcpp::Subscription<auto_aim_interfaces::msg::Target>::SharedPtr target_subscriber_;
-  rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr gimbal_cmd_publisher_;
+  rclcpp::Publisher<pb_rm_interfaces::msg::GimbalCmd>::SharedPtr gimbal_cmd_publisher_;
   rclcpp::Publisher<example_interfaces::msg::UInt8>::SharedPtr shoot_cmd_publisher_;
 
   message_filters::Subscriber<auto_aim_interfaces::msg::Target> target_sub_;

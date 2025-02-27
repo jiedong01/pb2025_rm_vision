@@ -18,6 +18,7 @@
   <depend>visualization_msgs</depend>
   <depend>example_interfaces</depend>
   <depend>auto_aim_interfaces</depend>
+  <depend>pb_rm_interfaces</depend>
   <depend>rmoss_projectile_motion</depend>
 
   <test_depend>ament_lint_auto</test_depend>

@@ -96,7 +96,7 @@ projectile_motion:
       initial_speed: 20.0
       target_frame: "gimbal_pitch"              # gimbal frame_id
       target_topic: "tracker/target"
-      gimbal_cmd_topic: "cmd_gimbal_joint"
+      gimbal_cmd_topic: "cmd_gimbal"
       shoot_cmd_topic: "cmd_shoot"
       solver_type: "gravity"                    # projectile solve method: gravity / gaf
       # friction: 0.001                         # Air resistance factor if use GAF solver
