@@ -53,6 +53,8 @@ private:
 
   // Debug functions
   void createDebugPublishers();
+  
+  void publishMarkers();
 
   void destroyDebugPublishers();
 
@@ -66,6 +68,7 @@ private:
   int detect_color_;  // 0: red, 1: blue
   std::mutex detector_mutex_;
   std::unique_ptr<rm_auto_aim::DetectorOpenVino> detector_;
+  auto_aim_interfaces::msg::Armors armors_msg_;
   std::queue<std::future<bool>> detect_requests_;
 
   // Camera measure
@@ -74,6 +77,7 @@ private:
 
   // Visualization marker publisher
   visualization_msgs::msg::Marker position_marker_;
+  visualization_msgs::msg::Marker armor_marker_;
   visualization_msgs::msg::Marker text_marker_;
   visualization_msgs::msg::MarkerArray marker_array_;
 
