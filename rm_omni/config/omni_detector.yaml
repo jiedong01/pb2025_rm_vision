@@ -1,11 +1,11 @@
 omni_detector:
   ros__parameters:
-    use_sensor_data_qos: false
+    use_sensor_data_qos: true
     debug_mode: true
     camera_num: 1
 
     omni:
-      camera0_name: 'front_camera'
+      camera0_name: 'front_industrial_camera'
       subscribe_compressed: false
 
       # Model

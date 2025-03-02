@@ -97,7 +97,7 @@ OmniNode::OmniNode(rclcpp::NodeOptions options)
   for (int i = 0; i < camera_num_; ++i) {
     img_subs_.push_back(std::make_shared<image_transport::CameraSubscriber>(
       image_transport::create_camera_subscription(
-        this, "/" + camera_names_[i] + "/image",
+        this, camera_names_[i] + "/image",
         std::bind(&OmniNode::imgCallback, this, std::placeholders::_1, std::placeholders::_2),
         transport_type_,
         use_sensor_data_qos ? rmw_qos_profile_sensor_data : rmw_qos_profile_default)));

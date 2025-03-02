@@ -16,28 +16,35 @@
 import os
 
 from ament_index_python.packages import get_package_share_directory
+from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
 from launch.conditions import UnlessCondition
-from launch.launch_description import LaunchDescription
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import LoadComposableNodes, Node
 from launch_ros.descriptions import ComposableNode, ParameterFile
+from nav2_common.launch import RewrittenYaml
 
 
 def generate_launch_description():
-    # Get the launch directory
     bringup_dir = get_package_share_directory("rm_omni")
 
-    # Declare the launch config
     namespace = LaunchConfiguration("namespace")
     params_file = LaunchConfiguration("params_file")
     container_name = LaunchConfiguration("container_name")
     use_external_container = LaunchConfiguration("use_external_container")
     use_sim_time = LaunchConfiguration("use_sim_time")
+    rviz_config_file = LaunchConfiguration("rviz_config_file")
 
-    configured_params = ParameterFile(params_file, allow_substs=True)
+    configured_params = ParameterFile(
+        RewrittenYaml(
+            source_file=params_file,
+            root_key=namespace,
+            param_rewrites={},
+            convert_types=True,
+        ),
+        allow_substs=True,
+    )
 
-    # Declare the launch arguments
     declare_use_sim_time_cmd = DeclareLaunchArgument(
         "use_sim_time",
         default_value="false",
@@ -45,7 +52,7 @@ def generate_launch_description():
     )
 
     declare_namespace_cmd = DeclareLaunchArgument(
-        "namespace", default_value="", description="Namespace"
+        "namespace", default_value="red_standard_robot1", description="Namespace"
     )
 
     declare_params_file_cmd = DeclareLaunchArgument(
@@ -60,10 +67,16 @@ def generate_launch_description():
         description="Container name",
     )
 
-    declare_use_eternal_container_cmd = DeclareLaunchArgument(
+    declare_use_external_container_cmd = DeclareLaunchArgument(
         "use_external_container",
         default_value="false",
-        description="Use eternal container",
+        description="Use external container",
+    )
+
+    declare_rviz_config_file_cmd = DeclareLaunchArgument(
+        "rviz_config_file",
+        default_value=os.path.join(bringup_dir, "rviz", "omni_default_view.rviz"),
+        description="Full path to the RViz config file to use",
     )
 
     # Create container node
@@ -75,7 +88,6 @@ def generate_launch_description():
         condition=UnlessCondition(use_external_container),
     )
 
-    # Create armor detector node
     load_detector = LoadComposableNodes(
         target_container=container_name,
         composable_node_descriptions=[
@@ -89,15 +101,32 @@ def generate_launch_description():
         ],
     )
 
+    start_rviz_cmd = Node(
+        package="rviz2",
+        executable="rviz2",
+        namespace=namespace,
+        arguments=["-d", rviz_config_file],
+        output="screen",
+        remappings=[
+            ("/tf", "tf"),
+            ("/tf_static", "tf_static"),
+            (
+                "/front_industrial_camera/camera_info",
+                "front_industrial_camera/camera_info",
+            ),
+        ],
+    )
+
     ld = LaunchDescription()
     ld.add_action(declare_use_sim_time_cmd)
     ld.add_action(declare_namespace_cmd)
     ld.add_action(declare_params_file_cmd)
     ld.add_action(declare_container_name_cmd)
-    ld.add_action(declare_use_eternal_container_cmd)
+    ld.add_action(declare_use_external_container_cmd)
+    ld.add_action(declare_rviz_config_file_cmd)
 
-    # Add nodes
     ld.add_action(container_node)
     ld.add_action(load_detector)
+    ld.add_action(start_rviz_cmd)
 
     return ld
