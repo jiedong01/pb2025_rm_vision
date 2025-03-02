@@ -274,7 +274,6 @@ void OmniNode::openvinoDetectCallback(
         debug_img, armor_key, cv::Point2i(obj.pts[0]), cv::FONT_HERSHEY_SIMPLEX, 0.8,
         cv::Scalar(0, 255, 255), 2);
     }
-
     publishMarkers();
   }
 

@@ -51,6 +51,8 @@ private:
   // Debug functions
   void createDebugPublishers();
 
+  void publishMarkers();
+
   void destroyDebugPublishers();
 
 private:
@@ -60,6 +62,7 @@ private:
   // OpenVINO Detector
   int detect_color_;  // 0: red, 1: blue
   std::unique_ptr<DetectorOpenVino> detector_;
+  auto_aim_interfaces::msg::Armors armors_msg_;
   std::queue<std::future<bool>> detect_requests_;
   // Camera info
   std::shared_ptr<sensor_msgs::msg::CameraInfo> cam_info_;
@@ -67,6 +70,7 @@ private:
 
   // Visualization marker publisher
   visualization_msgs::msg::Marker position_marker_;
+  visualization_msgs::msg::Marker armor_marker_;
   visualization_msgs::msg::Marker text_marker_;
   visualization_msgs::msg::MarkerArray marker_array_;
 

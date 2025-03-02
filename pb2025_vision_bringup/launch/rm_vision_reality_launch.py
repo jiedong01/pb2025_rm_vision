@@ -86,19 +86,19 @@ def generate_launch_description():
     declare_log_level_cmd = DeclareLaunchArgument(
         "log_level", default_value="info", description="log level"
     )
-
+   
     bringup_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(os.path.join(launch_dir, "bringup_launch.py")),
         launch_arguments={
             "namespace": namespace,
             "use_sim_time": use_sim_time,
             "params_file": params_file,
-            "use_hik_camera": "True",
+            "use_hik_camera": "False",
             "use_composition": use_composition,
             "use_respawn": use_respawn,
             "log_level": log_level,
         }.items(),
-    )
+  )
 
     rviz_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(os.path.join(launch_dir, "rviz_launch.py")),
