@@ -1,5 +1,6 @@
 hik_camera_ros2_driver:
   ros__parameters:
+    use_sim_time: false
     camera_info_url: "package://pb2025_vision_bringup/params/reality/camera_info.yaml"
     pixel_format: "BayerRG8"        # Recommended Option: RGB8Packed, BayerRG8
     adc_bit_depth: "Bits_8"         # If using BayerRG8, adc_bit_depth must be Bits_8; otherwise, it can be Bits_8 or Bits_12
@@ -14,7 +15,7 @@ hik_camera_ros2_driver:
 
 armor_detector:
   ros__parameters:
-    use_sim_time: true
+    use_sim_time: false
     debug: false
     camera_name: "front_industrial_camera"
 
@@ -29,7 +30,7 @@ armor_detector:
 
 armor_detector_openvino:
   ros__parameters:
-    use_sim_time: true
+    use_sim_time: false
     use_sensor_data_qos: true
     debug_mode: false
     detect_color: 0
@@ -47,6 +48,7 @@ armor_detector_openvino:
 
 armor_tracker:
   ros__parameters:
+    use_sim_time: false
     target_frame: chassis
     max_armor_distance: 10.0
 
@@ -67,6 +69,7 @@ armor_tracker:
 
 armor_tracker_zhengyu:
   ros__parameters:
+    use_sim_time: false
     target_frame: chassis
     max_armor_distance: 15.0
 
@@ -88,7 +91,7 @@ armor_tracker_zhengyu:
 
 projectile_motion:
   ros__parameters:
-    use_sim_time: true
+    use_sim_time: false
     projectile:
       offset_pitch: 0.0
       offset_yaw: 0.0
