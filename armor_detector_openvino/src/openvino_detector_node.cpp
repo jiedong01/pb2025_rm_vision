@@ -71,11 +71,15 @@ ArmorDetectorOpenvinoNode::ArmorDetectorOpenvinoNode(rclcpp::NodeOptions options
     "detector/armors", rclcpp::SensorDataQoS());
 
   // Visualization Marker
-  position_marker_.ns = "armors";
-  position_marker_.type = visualization_msgs::msg::Marker::SPHERE_LIST;
-  position_marker_.scale.x = position_marker_.scale.y = position_marker_.scale.z = 0.1;
-  position_marker_.color.a = 1.0;
-  position_marker_.color.r = 1.0;
+  armor_marker_.ns = "armors";
+  armor_marker_.action = visualization_msgs::msg::Marker::ADD;
+  armor_marker_.type = visualization_msgs::msg::Marker::CUBE;
+  armor_marker_.scale.x = 0.05;
+  armor_marker_.scale.z = 0.125;
+  armor_marker_.color.a = 1.0;
+  armor_marker_.color.g = 0.5;
+  armor_marker_.color.b = 1.0;
+  armor_marker_.lifetime = rclcpp::Duration::from_seconds(0.1);
 
   text_marker_.ns = "classification";
   text_marker_.action = visualization_msgs::msg::Marker::ADD;
@@ -85,6 +89,7 @@ ArmorDetectorOpenvinoNode::ArmorDetectorOpenvinoNode(rclcpp::NodeOptions options
   text_marker_.color.r = 1.0;
   text_marker_.color.g = 1.0;
   text_marker_.color.b = 1.0;
+  text_marker_.lifetime = rclcpp::Duration::from_seconds(0.1);
   marker_pub_ = this->create_publisher<visualization_msgs::msg::MarkerArray>("detector/marker", 10);
 
   // Camera handler
@@ -179,6 +184,12 @@ void ArmorDetectorOpenvinoNode::openvinoDetectCallback(
   auto_aim_interfaces::msg::Armors armors_msg;
   armors_msg.header.frame_id = frame_id_;
   armors_msg.header.stamp = timestamp;
+  armor_marker_.header = text_marker_.header = armors_msg.header;
+
+  armors_msg.armors.clear();
+  marker_array_.markers.clear();
+  armor_marker_.id = 0;
+  text_marker_.id = 0;
 
   for (auto & obj : objs) {
     if (detect_color_ == 0 && obj.color != ArmorColor::RED) {
@@ -217,7 +228,21 @@ void ArmorDetectorOpenvinoNode::openvinoDetectCallback(
     armor.pose.orientation.w = tf_quaternion.w();
     armor.distance_to_image_center = measure_tool_->calcDistanceToCenter(obj);
 
-    armors_msg.armors.push_back(std::move(armor));
+    // Fill the markers
+    armor_marker_.id++;
+    armor_marker_.scale.y = armor.type == "small" ? 0.135 : 0.23;
+    armor_marker_.pose = armor.pose;
+
+    text_marker_.id++;
+    text_marker_.pose.position = armor.pose.position;
+    text_marker_.pose.position.y -= 0.1;
+    text_marker_.text = armor.number;
+
+    armors_msg.armors.emplace_back(armor);
+    marker_array_.markers.emplace_back(armor_marker_);
+    marker_array_.markers.emplace_back(text_marker_);
+
+    publishMarkers(objs.empty());
 
     if (debug_mode_) {
       if (debug_img.empty()) {
@@ -276,6 +301,29 @@ void ArmorDetectorOpenvinoNode::openvinoDetectCallback(
       cv::Scalar(0, 255, 255), 2);
 
     debug_img_pub_.publish(cv_bridge::CvImage(armors_msg.header, "rgb8", debug_img).toImageMsg());
+  }
+}
+
+void ArmorDetectorOpenvinoNode::publishMarkers(bool is_empty)
+{
+  using Marker = visualization_msgs::msg::Marker;
+
+  if (is_empty) {
+    visualization_msgs::msg::MarkerArray delete_markers;
+
+    Marker armor_delete_marker;
+    armor_delete_marker.action = Marker::DELETEALL;
+    armor_delete_marker.ns = "armors";
+    armor_delete_marker.header.stamp = this->now();
+    delete_markers.markers.push_back(armor_delete_marker);
+
+    Marker text_delete_marker;
+    text_delete_marker.action = Marker::DELETEALL;
+    text_delete_marker.ns = "classification";
+    text_delete_marker.header.stamp = this->now();
+    delete_markers.markers.push_back(text_delete_marker);
+  } else {
+    marker_pub_->publish(marker_array_);
   }
 }
 

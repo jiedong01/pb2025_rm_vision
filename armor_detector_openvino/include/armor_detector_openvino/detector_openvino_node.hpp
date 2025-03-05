@@ -48,6 +48,8 @@ private:
   void openvinoDetectCallback(
     const std::vector<ArmorObject> & objs, int64_t timestamp_nanosec, const cv::Mat & src_img);
 
+  void publishMarkers(bool is_empty);
+
   // Debug functions
   void createDebugPublishers();
 
@@ -66,7 +68,7 @@ private:
   std::unique_ptr<MonoMeasureTool> measure_tool_;
 
   // Visualization marker publisher
-  visualization_msgs::msg::Marker position_marker_;
+  visualization_msgs::msg::Marker armor_marker_;
   visualization_msgs::msg::Marker text_marker_;
   visualization_msgs::msg::MarkerArray marker_array_;
 
