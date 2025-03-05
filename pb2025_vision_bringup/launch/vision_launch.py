@@ -12,12 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 import os
 
 from ament_index_python.packages import get_package_share_directory
-from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, GroupAction, SetEnvironmentVariable
+from launch import LaunchContext, LaunchDescription
+from launch.actions import (
+    DeclareLaunchArgument,
+    GroupAction,
+    OpaqueFunction,
+    SetEnvironmentVariable,
+)
 from launch.conditions import IfCondition
 from launch.substitutions import LaunchConfiguration, PythonExpression
 from launch_ros.actions import LoadComposableNodes, Node
@@ -25,12 +29,14 @@ from launch_ros.descriptions import ComposableNode, ParameterFile
 from nav2_common.launch import RewrittenYaml
 
 
-def generate_launch_description():
-    # Get the launch directory
-    bringup_dir = get_package_share_directory("pb2025_vision_bringup")
-
+def launch_setup(context: LaunchContext) -> list:
+    """
+    NOTE: Using OpaqueFunction in order to get the context in string format...
+    But it is too hacky and not recommended.
+    """
     namespace = LaunchConfiguration("namespace")
     use_sim_time = LaunchConfiguration("use_sim_time")
+    detector = LaunchConfiguration("detector")
     params_file = LaunchConfiguration("params_file")
     use_hik_camera = LaunchConfiguration("use_hik_camera")
     use_composition = LaunchConfiguration("use_composition")
@@ -41,6 +47,11 @@ def generate_launch_description():
 
     # Create our own temporary YAML files that include substitutions
     param_substitutions = {"use_sim_time": use_sim_time}
+
+    detector_type = detector.perform(context)
+    full_detector_name = f"armor_detector_{detector_type}"
+    full_detector_executable = f"armor_detector_{detector_type}_node"
+    full_detector_plugin = f"rm_auto_aim::ArmorDetector{detector_type.title()}Node"
 
     configured_params = ParameterFile(
         RewrittenYaml(
@@ -58,52 +69,6 @@ def generate_launch_description():
 
     colorized_output_envvar = SetEnvironmentVariable("RCUTILS_COLORIZED_OUTPUT", "1")
 
-    declare_namespace_cmd = DeclareLaunchArgument(
-        "namespace", default_value="", description="Top-level namespace"
-    )
-
-    declare_use_sim_time_cmd = DeclareLaunchArgument(
-        "use_sim_time",
-        default_value="false",
-        description="Use simulation (Gazebo) clock if true",
-    )
-
-    declare_params_file_cmd = DeclareLaunchArgument(
-        "params_file",
-        default_value=os.path.join(
-            bringup_dir, "params", "simulation", "vision_params.yaml"
-        ),
-        description="Full path to the ROS2 parameters file to use for all launched nodes",
-    )
-
-    declare_use_hik_camera_cmd = DeclareLaunchArgument(
-        "use_hik_camera",
-        default_value="True",
-        description="Whether to bringup hik camera node",
-    )
-
-    declare_use_composition_cmd = DeclareLaunchArgument(
-        "use_composition",
-        default_value="False",
-        description="Use composed bringup if True",
-    )
-
-    declare_container_name_cmd = DeclareLaunchArgument(
-        "container_name",
-        default_value="rm_vision_container",
-        description="the name of container that nodes will load in if use composition",
-    )
-
-    declare_use_respawn_cmd = DeclareLaunchArgument(
-        "use_respawn",
-        default_value="False",
-        description="Whether to respawn if a node crashes. Applied when composition is disabled.",
-    )
-
-    declare_log_level_cmd = DeclareLaunchArgument(
-        "log_level", default_value="info", description="log level"
-    )
-
     load_nodes = GroupAction(
         condition=IfCondition(PythonExpression(["not ", use_composition])),
         actions=[
@@ -118,20 +83,10 @@ def generate_launch_description():
                 parameters=[configured_params],
                 arguments=["--ros-args", "--log-level", log_level],
             ),
-            # Node(
-            #     package="armor_detector_opencv",
-            #     executable="armor_detector_opencv_node",
-            #     name="armor_detector_opencv",
-            #     output="screen",
-            #     respawn=use_respawn,
-            #     respawn_delay=2.0,
-            #     parameters=[configured_params],
-            #     arguments=["--ros-args", "--log-level", log_level],
-            # ),
             Node(
-                package="armor_detector_openvino",
-                executable="armor_detector_openvino_node",
-                name="armor_detector_openvino",
+                package=full_detector_name,
+                executable=full_detector_executable,
+                name=full_detector_name,
                 output="screen",
                 respawn=use_respawn,
                 respawn_delay=2.0,
@@ -175,24 +130,18 @@ def generate_launch_description():
         condition=IfCondition(use_composition),
         target_container=container_name_full,
         composable_node_descriptions=[
-            ComposableNode(
-                # BUG: Condition not works due to https://github.com/ros2/launch_ros/pull/339#issuecomment-2475743824
-                condition=IfCondition(use_hik_camera),
-                package="hik_camera_ros2_driver",
-                plugin="hik_camera_ros2_driver::HikCameraRos2DriverNode",
-                name="hik_camera_ros2_driver",
-                parameters=[configured_params],
-            ),
             # ComposableNode(
-            #     package="armor_detector_opencv",
-            #     plugin="rm_auto_aim::ArmorDetectorOpencvNode",
-            #     name="armor_detector_opencv",
+            #     # BUG: Condition not works due to https://github.com/ros2/launch_ros/pull/339#issuecomment-2475743824
+            #     condition=IfCondition(use_hik_camera),
+            #     package="hik_camera_ros2_driver",
+            #     plugin="hik_camera_ros2_driver::HikCameraRos2DriverNode",
+            #     name="hik_camera_ros2_driver",
             #     parameters=[configured_params],
             # ),
             ComposableNode(
-                package="armor_detector_openvino",
-                plugin="rm_auto_aim::ArmorDetectorOpenvinoNode",
-                name="armor_detector_openvino",
+                package=full_detector_name,
+                plugin=full_detector_plugin,
+                name=full_detector_name,
                 parameters=[configured_params],
             ),
             ComposableNode(
@@ -210,24 +159,85 @@ def generate_launch_description():
         ],
     )
 
+    return [
+        stdout_linebuf_envvar,
+        colorized_output_envvar,
+        load_nodes,
+        load_composable_nodes,
+    ]
+
+
+def generate_launch_description():
+    # Get the launch directory
+    bringup_dir = get_package_share_directory("pb2025_vision_bringup")
+
+    declare_namespace_cmd = DeclareLaunchArgument(
+        "namespace", default_value="", description="Top-level namespace"
+    )
+
+    declare_use_sim_time_cmd = DeclareLaunchArgument(
+        "use_sim_time",
+        default_value="false",
+        description="Use simulation (Gazebo) clock if true",
+    )
+
+    declare_detector_cmd = DeclareLaunchArgument(
+        "detector",
+        default_value="opencv",
+        description="Type of detector to use (option: 'opencv', 'openvino', 'tensorrt')",
+    )
+
+    declare_params_file_cmd = DeclareLaunchArgument(
+        "params_file",
+        default_value=os.path.join(
+            bringup_dir, "params", "simulation", "vision_params.yaml"
+        ),
+        description="Full path to the ROS2 parameters file to use for all launched nodes",
+    )
+
+    declare_use_hik_camera_cmd = DeclareLaunchArgument(
+        "use_hik_camera",
+        default_value="True",
+        description="Whether to bringup hik camera node",
+    )
+
+    declare_use_composition_cmd = DeclareLaunchArgument(
+        "use_composition",
+        default_value="False",
+        description="Use composed bringup if True",
+    )
+
+    declare_container_name_cmd = DeclareLaunchArgument(
+        "container_name",
+        default_value="rm_vision_container",
+        description="the name of container that nodes will load in if use composition",
+    )
+
+    declare_use_respawn_cmd = DeclareLaunchArgument(
+        "use_respawn",
+        default_value="False",
+        description="Whether to respawn if a node crashes. Applied when composition is disabled.",
+    )
+
+    declare_log_level_cmd = DeclareLaunchArgument(
+        "log_level", default_value="info", description="log level"
+    )
+
     # Create the launch description and populate
     ld = LaunchDescription()
-
-    # Set environment variables
-    ld.add_action(stdout_linebuf_envvar)
-    ld.add_action(colorized_output_envvar)
 
     # Declare the launch options
     ld.add_action(declare_namespace_cmd)
     ld.add_action(declare_use_sim_time_cmd)
+    ld.add_action(declare_detector_cmd)
     ld.add_action(declare_params_file_cmd)
     ld.add_action(declare_use_hik_camera_cmd)
     ld.add_action(declare_use_composition_cmd)
     ld.add_action(declare_container_name_cmd)
     ld.add_action(declare_use_respawn_cmd)
     ld.add_action(declare_log_level_cmd)
+
     # Add the actions to launch all of the vision nodes
-    ld.add_action(load_nodes)
-    ld.add_action(load_composable_nodes)
+    ld.add_action(OpaqueFunction(function=launch_setup))
 
     return ld

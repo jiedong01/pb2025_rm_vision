@@ -36,7 +36,7 @@
 
 ```bash
 sudo apt install git-lfs
-pip install vcstool2
+sudo pip install vcstool2
 ```
 
 ```bash

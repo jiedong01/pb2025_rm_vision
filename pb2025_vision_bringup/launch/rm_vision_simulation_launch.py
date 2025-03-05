@@ -31,6 +31,7 @@ def generate_launch_description():
     # Create the launch configuration variables
     namespace = LaunchConfiguration("namespace")
     use_sim_time = LaunchConfiguration("use_sim_time")
+    detector = LaunchConfiguration("detector")
     params_file = LaunchConfiguration("params_file")
     use_composition = LaunchConfiguration("use_composition")
     use_respawn = LaunchConfiguration("use_respawn")
@@ -51,6 +52,12 @@ def generate_launch_description():
         "use_sim_time",
         default_value="True",
         description="Use simulation (Gazebo) clock if True",
+    )
+
+    declare_detector_cmd = DeclareLaunchArgument(
+        "detector",
+        default_value="",
+        description="Type of detector to use (e.g., 'openvino', 'tensorrt'). Default is an empty string, which means using the opencv detector",
     )
 
     declare_params_file_cmd = DeclareLaunchArgument(
@@ -92,6 +99,7 @@ def generate_launch_description():
         launch_arguments={
             "namespace": namespace,
             "use_sim_time": use_sim_time,
+            "detector": detector,
             "params_file": params_file,
             "use_hik_camera": "False",
             "use_composition": use_composition,
@@ -115,6 +123,7 @@ def generate_launch_description():
     # Declare the launch options
     ld.add_action(declare_namespace_cmd)
     ld.add_action(declare_use_sim_time_cmd)
+    ld.add_action(declare_detector_cmd)
     ld.add_action(declare_params_file_cmd)
     ld.add_action(declare_use_composition_cmd)
     ld.add_action(declare_rviz_config_file_cmd)
