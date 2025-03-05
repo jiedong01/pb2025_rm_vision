@@ -10,7 +10,7 @@
 #include <vector>
 
 #include "ament_index_cpp/get_package_share_directory.hpp"
-#include "armor_detector/number_classifier.hpp"
+#include "armor_detector_opencv/number_classifier.hpp"
 #include "gtest/gtest.h"
 #include "opencv2/core/mat.hpp"
 
@@ -18,7 +18,7 @@ using hrc = std::chrono::high_resolution_clock;
 
 TEST(test_nc, benchmark)
 {
-  auto pkg_path = ament_index_cpp::get_package_share_directory("armor_detector");
+  auto pkg_path = ament_index_cpp::get_package_share_directory("armor_detector_opencv");
   auto model_path = pkg_path + "/model/mlp.onnx";
   auto label_path = pkg_path + "/model/label.txt";
   rm_auto_aim::NumberClassifier nc(model_path, label_path, 0.5);

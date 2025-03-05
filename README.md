@@ -13,7 +13,7 @@
 
 深圳北理莫斯科大学 北极熊战队视觉算法仓库，用于 RoboMaster 机器人装甲板检测/整车状态估计/弹道计算。
 
-- [armor_detector](./armor_detector/): 基于 @chenjunnn 开源项目 [rm_vision](https://github.com/chenjunnn/rm_vision) OpenCV 装甲板检测功能包
+- [armor_detector_opencv](./armor_detector_opencv/): 基于 @chenjunnn 开源项目 [rm_vision](https://github.com/chenjunnn/rm_vision) OpenCV 装甲板检测功能包
 - [armor_detector_openvino](./armor_detector_openvino/): 基于 @Ericsii 开源项目 [rm_vision](https://github.com/Ericsii/rm_vision) OpenVINO 装甲板检测功能包
 - [armor_tracker](./armor_tracker/): 基于 @FaterYU 开源项目 [rm_auto_aim](https://github.com/FaterYU/rm_auto_aim/tree/main/armor_tracker) 的整车状态估计功能包
 - [projectile_motion](./projectile_motion/): 基于 [rmoss_core](https://github.com/robomaster-oss/rmoss_core) 的弹道计算功能包

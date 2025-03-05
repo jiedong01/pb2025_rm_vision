@@ -119,9 +119,9 @@ def generate_launch_description():
                 arguments=["--ros-args", "--log-level", log_level],
             ),
             # Node(
-            #     package="armor_detector",
-            #     executable="armor_detector_node",
-            #     name="armor_detector",
+            #     package="armor_detector_opencv",
+            #     executable="armor_detector_opencv_node",
+            #     name="armor_detector_opencv",
             #     output="screen",
             #     respawn=use_respawn,
             #     respawn_delay=2.0,
@@ -184,9 +184,9 @@ def generate_launch_description():
                 parameters=[configured_params],
             ),
             # ComposableNode(
-            #     package="armor_detector",
-            #     plugin="rm_auto_aim::ArmorDetectorNode",
-            #     name="armor_detector",
+            #     package="armor_detector_opencv",
+            #     plugin="rm_auto_aim::ArmorDetectorOpenCVNode",
+            #     name="armor_detector_opencv",
             #     parameters=[configured_params],
             # ),
             ComposableNode(

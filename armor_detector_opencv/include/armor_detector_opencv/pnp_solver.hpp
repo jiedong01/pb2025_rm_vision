@@ -3,13 +3,13 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-#ifndef ARMOR_DETECTOR__PNP_SOLVER_HPP_
-#define ARMOR_DETECTOR__PNP_SOLVER_HPP_
+#ifndef ARMOR_DETECTOR_OPENCV__PNP_SOLVER_HPP_
+#define ARMOR_DETECTOR_OPENCV__PNP_SOLVER_HPP_
 
 #include <array>
 #include <vector>
 
-#include "armor_detector/armor.hpp"
+#include "armor_detector_opencv/armor.hpp"
 #include "geometry_msgs/msg/point.hpp"
 #include "opencv2/core.hpp"
 
@@ -45,4 +45,4 @@ private:
 
 }  // namespace rm_auto_aim
 
-#endif  // ARMOR_DETECTOR__PNP_SOLVER_HPP_
+#endif  // ARMOR_DETECTOR_OPENCV__PNP_SOLVER_HPP_

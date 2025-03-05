@@ -3,8 +3,8 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-#ifndef ARMOR_DETECTOR__ARMOR_HPP_
-#define ARMOR_DETECTOR__ARMOR_HPP_
+#ifndef ARMOR_DETECTOR_OPENCV__ARMOR_HPP_
+#define ARMOR_DETECTOR_OPENCV__ARMOR_HPP_
 
 #include <algorithm>
 #include <string>
@@ -71,4 +71,4 @@ struct Armor
 
 }  // namespace rm_auto_aim
 
-#endif  // ARMOR_DETECTOR__ARMOR_HPP_
+#endif  // ARMOR_DETECTOR_OPENCV__ARMOR_HPP_

@@ -3,8 +3,8 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-#ifndef ARMOR_DETECTOR__NUMBER_CLASSIFIER_HPP_
-#define ARMOR_DETECTOR__NUMBER_CLASSIFIER_HPP_
+#ifndef ARMOR_DETECTOR_OPENCV__NUMBER_CLASSIFIER_HPP_
+#define ARMOR_DETECTOR_OPENCV__NUMBER_CLASSIFIER_HPP_
 
 #include <cstddef>
 #include <iostream>
@@ -12,7 +12,7 @@
 #include <string>
 #include <vector>
 
-#include "armor_detector/armor.hpp"
+#include "armor_detector_opencv/armor.hpp"
 #include "opencv2/opencv.hpp"
 
 namespace rm_auto_aim
@@ -37,4 +37,4 @@ private:
 };
 }  // namespace rm_auto_aim
 
-#endif  // ARMOR_DETECTOR__NUMBER_CLASSIFIER_HPP_
+#endif  // ARMOR_DETECTOR_OPENCV__NUMBER_CLASSIFIER_HPP_

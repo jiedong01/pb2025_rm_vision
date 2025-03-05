@@ -3,7 +3,7 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-#include "armor_detector/detector_node.hpp"
+#include "armor_detector_opencv/detector_node.hpp"
 
 #include <algorithm>
 #include <map>
@@ -12,7 +12,7 @@
 #include <vector>
 
 #include "ament_index_cpp/get_package_share_directory.hpp"
-#include "armor_detector/armor.hpp"
+#include "armor_detector_opencv/armor.hpp"
 #include "cv_bridge/cv_bridge.h"
 #include "image_transport/image_transport.hpp"
 #include "opencv2/core.hpp"
@@ -26,7 +26,7 @@
 namespace rm_auto_aim
 {
 ArmorDetectorNode::ArmorDetectorNode(const rclcpp::NodeOptions & options)
-: Node("armor_detector", options)
+: Node("armor_detector_opencv", options)
 {
   RCLCPP_INFO(this->get_logger(), "Starting DetectorNode!");
 
@@ -185,7 +185,7 @@ std::unique_ptr<Detector> ArmorDetectorNode::initDetector()
   auto detector = std::make_unique<Detector>(binary_thres, detect_color, l_params, a_params);
 
   // Init classifier
-  auto pkg_path = ament_index_cpp::get_package_share_directory("armor_detector");
+  auto pkg_path = ament_index_cpp::get_package_share_directory("armor_detector_opencv");
   auto model_path = pkg_path + "/model/mlp.onnx";
   auto label_path = pkg_path + "/model/label.txt";
   double threshold = this->declare_parameter("classifier_threshold", 0.7);

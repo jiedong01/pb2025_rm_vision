@@ -5,7 +5,7 @@
 
 #include <memory>
 
-#include "armor_detector/detector_node.hpp"
+#include "armor_detector_opencv/detector_node.hpp"
 #include "gtest/gtest.h"
 #include "rclcpp/executors.hpp"
 #include "rclcpp/node_options.hpp"

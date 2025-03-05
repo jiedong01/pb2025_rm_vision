@@ -3,7 +3,7 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-#include "armor_detector/number_classifier.hpp"
+#include "armor_detector_opencv/number_classifier.hpp"
 
 #include <algorithm>
 #include <cstddef>
@@ -12,7 +12,7 @@
 #include <string>
 #include <vector>
 
-#include "armor_detector/armor.hpp"
+#include "armor_detector_opencv/armor.hpp"
 #include "opencv2/core.hpp"
 #include "opencv2/core/mat.hpp"
 #include "opencv2/core/types.hpp"

@@ -1,4 +1,4 @@
-armor_detector:
+armor_detector_opencv:
   ros__parameters:
     use_sim_time: true
     debug: true

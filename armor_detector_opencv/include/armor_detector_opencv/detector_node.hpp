@@ -3,16 +3,16 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-#ifndef ARMOR_DETECTOR__DETECTOR_NODE_HPP_
-#define ARMOR_DETECTOR__DETECTOR_NODE_HPP_
+#ifndef ARMOR_DETECTOR_OPENCV__DETECTOR_NODE_HPP_
+#define ARMOR_DETECTOR_OPENCV__DETECTOR_NODE_HPP_
 
 #include <memory>
 #include <string>
 #include <vector>
 
-#include "armor_detector/detector.hpp"
-#include "armor_detector/number_classifier.hpp"
-#include "armor_detector/pnp_solver.hpp"
+#include "armor_detector_opencv/detector.hpp"
+#include "armor_detector_opencv/number_classifier.hpp"
+#include "armor_detector_opencv/pnp_solver.hpp"
 #include "auto_aim_interfaces/msg/armors.hpp"
 #include "image_transport/image_transport.hpp"
 #include "image_transport/publisher.hpp"
@@ -78,4 +78,4 @@ private:
 
 }  // namespace rm_auto_aim
 
-#endif  // ARMOR_DETECTOR__DETECTOR_NODE_HPP_
+#endif  // ARMOR_DETECTOR_OPENCV__DETECTOR_NODE_HPP_

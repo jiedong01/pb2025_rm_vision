@@ -9,7 +9,7 @@
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
-  <depend>armor_detector</depend>
+  <depend>armor_detector_opencv</depend>
   <depend>armor_detector_openvino</depend>
   <depend>armor_tracker</depend>
   <depend>projectile_motion</depend>

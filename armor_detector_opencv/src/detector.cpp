@@ -3,7 +3,7 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-#include "armor_detector/detector.hpp"
+#include "armor_detector_opencv/detector.hpp"
 
 #include <algorithm>
 #include <cmath>

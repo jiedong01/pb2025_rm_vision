@@ -1,6 +1,6 @@
-# armor_detector
+# armor_detector_opencv
 
-- [armor\_detector](#armor_detector)
+- [armor\_detector](#armor_detector_opencv)
   - [识别节点](#识别节点)
     - [DetectorNode](#detectornode)
   - [Detector](#detector)
