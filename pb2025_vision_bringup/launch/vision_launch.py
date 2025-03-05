@@ -185,13 +185,13 @@ def generate_launch_description():
             ),
             # ComposableNode(
             #     package="armor_detector_opencv",
-            #     plugin="rm_auto_aim::ArmorDetectorOpenCVNode",
+            #     plugin="rm_auto_aim::ArmorDetectorOpencvNode",
             #     name="armor_detector_opencv",
             #     parameters=[configured_params],
             # ),
             ComposableNode(
                 package="armor_detector_openvino",
-                plugin="rm_auto_aim::ArmorDetectorOpenVinoNode",
+                plugin="rm_auto_aim::ArmorDetectorOpenvinoNode",
                 name="armor_detector_openvino",
                 parameters=[configured_params],
             ),

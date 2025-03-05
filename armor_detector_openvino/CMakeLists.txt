@@ -43,7 +43,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${OpenCV_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} ${other_dependencies})
 
 rclcpp_components_register_node(${PROJECT_NAME}
-  PLUGIN "rm_auto_aim::ArmorDetectorOpenVinoNode"
+  PLUGIN "rm_auto_aim::ArmorDetectorOpenvinoNode"
   EXECUTABLE ${PROJECT_NAME}_node
 )
 

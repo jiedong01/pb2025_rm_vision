@@ -79,7 +79,7 @@ def generate_launch_description():
         composable_node_descriptions=[
             ComposableNode(
                 package="armor_detector_openvino",
-                plugin="rm_auto_aim::ArmorDetectorOpenVinoNode",
+                plugin="rm_auto_aim::ArmorDetectorOpenvinoNode",
                 name="armor_detector_openvino",
                 parameters=[configured_params, {"use_sim_time": use_sim_time}],
                 namespace=namespace,

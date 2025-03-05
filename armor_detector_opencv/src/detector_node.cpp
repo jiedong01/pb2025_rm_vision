@@ -25,7 +25,7 @@
 
 namespace rm_auto_aim
 {
-ArmorDetectorNode::ArmorDetectorNode(const rclcpp::NodeOptions & options)
+ArmorDetectorOpencvNode::ArmorDetectorOpencvNode(const rclcpp::NodeOptions & options)
 : Node("armor_detector_opencv", options)
 {
   RCLCPP_INFO(this->get_logger(), "Starting DetectorNode!");
@@ -87,10 +87,10 @@ ArmorDetectorNode::ArmorDetectorNode(const rclcpp::NodeOptions & options)
 
   img_sub_ = this->create_subscription<sensor_msgs::msg::Image>(
     camera_name_ + "/image", rclcpp::SensorDataQoS(),
-    std::bind(&ArmorDetectorNode::imageCallback, this, std::placeholders::_1));
+    std::bind(&ArmorDetectorOpencvNode::imageCallback, this, std::placeholders::_1));
 }
 
-void ArmorDetectorNode::imageCallback(const sensor_msgs::msg::Image::ConstSharedPtr img_msg)
+void ArmorDetectorOpencvNode::imageCallback(const sensor_msgs::msg::Image::ConstSharedPtr img_msg)
 {
   auto armors = detectArmors(img_msg);
 
@@ -155,7 +155,7 @@ void ArmorDetectorNode::imageCallback(const sensor_msgs::msg::Image::ConstShared
   }
 }
 
-std::unique_ptr<Detector> ArmorDetectorNode::initDetector()
+std::unique_ptr<Detector> ArmorDetectorOpencvNode::initDetector()
 {
   rcl_interfaces::msg::ParameterDescriptor param_desc;
   param_desc.integer_range.resize(1);
@@ -197,7 +197,7 @@ std::unique_ptr<Detector> ArmorDetectorNode::initDetector()
   return detector;
 }
 
-std::vector<Armor> ArmorDetectorNode::detectArmors(
+std::vector<Armor> ArmorDetectorOpencvNode::detectArmors(
   const sensor_msgs::msg::Image::ConstSharedPtr & img_msg)
 {
   // Convert ROS img to cv::Mat
@@ -251,7 +251,7 @@ std::vector<Armor> ArmorDetectorNode::detectArmors(
   return armors;
 }
 
-void ArmorDetectorNode::createDebugPublishers()
+void ArmorDetectorOpencvNode::createDebugPublishers()
 {
   lights_data_pub_ =
     this->create_publisher<auto_aim_interfaces::msg::DebugLights>("detector/debug_lights", 10);
@@ -263,7 +263,7 @@ void ArmorDetectorNode::createDebugPublishers()
   debug_img_pub_ = image_transport::create_publisher(this, "detector/debug_img");
 }
 
-void ArmorDetectorNode::destroyDebugPublishers()
+void ArmorDetectorOpencvNode::destroyDebugPublishers()
 {
   lights_data_pub_.reset();
   armors_data_pub_.reset();
@@ -273,7 +273,7 @@ void ArmorDetectorNode::destroyDebugPublishers()
   debug_img_pub_.shutdown();
 }
 
-void ArmorDetectorNode::publishMarkers()
+void ArmorDetectorOpencvNode::publishMarkers()
 {
   using Marker = visualization_msgs::msg::Marker;
   armor_marker_.action = armors_msg_.armors.empty() ? Marker::DELETEALL : Marker::ADD;
@@ -288,4 +288,4 @@ void ArmorDetectorNode::publishMarkers()
 // Register the component with class_loader.
 // This acts as a sort of entry point, allowing the component to be discoverable when its library
 // is being loaded into a running process.
-RCLCPP_COMPONENTS_REGISTER_NODE(rm_auto_aim::ArmorDetectorNode)
+RCLCPP_COMPONENTS_REGISTER_NODE(rm_auto_aim::ArmorDetectorOpencvNode)

@@ -23,7 +23,7 @@
 
 namespace rm_auto_aim
 {
-ArmorDetectorOpenVinoNode::ArmorDetectorOpenVinoNode(rclcpp::NodeOptions options)
+ArmorDetectorOpenvinoNode::ArmorDetectorOpenvinoNode(rclcpp::NodeOptions options)
 : Node("detector_openvino_node", options.use_intra_process_comms(true))
 {
   RCLCPP_INFO(this->get_logger(), "Initializing detect node");
@@ -109,14 +109,14 @@ ArmorDetectorOpenVinoNode::ArmorDetectorOpenVinoNode(rclcpp::NodeOptions options
 
   img_sub_ = std::make_shared<image_transport::Subscriber>(image_transport::create_subscription(
     this, camera_name_ + "/image",
-    std::bind(&ArmorDetectorOpenVinoNode::imgCallback, this, std::placeholders::_1),
+    std::bind(&ArmorDetectorOpenvinoNode::imgCallback, this, std::placeholders::_1),
     transport_type_, use_sensor_data_qos ? rmw_qos_profile_sensor_data : rmw_qos_profile_default));
   RCLCPP_INFO(this->get_logger(), "Subscribing to %s", img_sub_->getTopic().c_str());
 
   RCLCPP_INFO(this->get_logger(), "Initializing finished.");
 }
 
-void ArmorDetectorOpenVinoNode::initDetector()
+void ArmorDetectorOpenvinoNode::initDetector()
 {
   auto model_path = this->declare_parameter("detector.model_path", "");
   auto device_type = this->declare_parameter("detector.device_type", "AUTO");
@@ -136,13 +136,13 @@ void ArmorDetectorOpenVinoNode::initDetector()
     model_path, device_type, conf_threshold, top_k, nms_threshold);
   // Set detect callback
   detector_->setCallback(std::bind(
-    &ArmorDetectorOpenVinoNode::openvinoDetectCallback, this, std::placeholders::_1,
+    &ArmorDetectorOpenvinoNode::openvinoDetectCallback, this, std::placeholders::_1,
     std::placeholders::_2, std::placeholders::_3));
   // init detector
   detector_->init();
 }
 
-void ArmorDetectorOpenVinoNode::imgCallback(const sensor_msgs::msg::Image::ConstSharedPtr & msg)
+void ArmorDetectorOpenvinoNode::imgCallback(const sensor_msgs::msg::Image::ConstSharedPtr & msg)
 {
   // limits request size
   while (detect_requests_.size() > 5) {
@@ -158,7 +158,7 @@ void ArmorDetectorOpenVinoNode::imgCallback(const sensor_msgs::msg::Image::Const
   detect_requests_.push(detector_->pushInput(img, timestamp.nanoseconds()));
 }
 
-void ArmorDetectorOpenVinoNode::openvinoDetectCallback(
+void ArmorDetectorOpenvinoNode::openvinoDetectCallback(
   const std::vector<ArmorObject> & objs, int64_t timestamp_nanosec, const cv::Mat & src_img)
 {
   if (measure_tool_ == nullptr) {
@@ -279,14 +279,14 @@ void ArmorDetectorOpenVinoNode::openvinoDetectCallback(
   }
 }
 
-void ArmorDetectorOpenVinoNode::createDebugPublishers()
+void ArmorDetectorOpenvinoNode::createDebugPublishers()
 {
   debug_img_pub_ = image_transport::create_publisher(this, "detector/debug_img");
 }
 
-void ArmorDetectorOpenVinoNode::destroyDebugPublishers() { debug_img_pub_.shutdown(); }
+void ArmorDetectorOpenvinoNode::destroyDebugPublishers() { debug_img_pub_.shutdown(); }
 
 }  // namespace rm_auto_aim
 
 #include "rclcpp_components/register_node_macro.hpp"
-RCLCPP_COMPONENTS_REGISTER_NODE(rm_auto_aim::ArmorDetectorOpenVinoNode)
+RCLCPP_COMPONENTS_REGISTER_NODE(rm_auto_aim::ArmorDetectorOpenvinoNode)

@@ -31,7 +31,7 @@ TEST(ArmorDetecterNode, NodeStartupTest)
   std::string model_path = ament_index_cpp::get_package_share_directory("armor_detector_openvino") +
                            "/model/opt-1208-001.onnx";
   node_options.append_parameter_override("detector.model_path", model_path);
-  auto node = std::make_shared<rm_auto_aim::ArmorDetectorOpenVinoNode>(node_options);
+  auto node = std::make_shared<rm_auto_aim::ArmorDetectorOpenvinoNode>(node_options);
 
   auto spin_thread = std::thread([&]() { rclcpp::spin(node); });
   std::this_thread::sleep_for(1000ms);
