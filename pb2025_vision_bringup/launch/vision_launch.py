@@ -130,14 +130,14 @@ def launch_setup(context: LaunchContext) -> list:
         condition=IfCondition(use_composition),
         target_container=container_name_full,
         composable_node_descriptions=[
-            # ComposableNode(
-            #     # BUG: Condition not works due to https://github.com/ros2/launch_ros/pull/339#issuecomment-2475743824
-            #     condition=IfCondition(use_hik_camera),
-            #     package="hik_camera_ros2_driver",
-            #     plugin="hik_camera_ros2_driver::HikCameraRos2DriverNode",
-            #     name="hik_camera_ros2_driver",
-            #     parameters=[configured_params],
-            # ),
+            ComposableNode(
+                # BUG: Condition not works due to https://github.com/ros2/launch_ros/pull/339#issuecomment-2475743824
+                condition=IfCondition(use_hik_camera),
+                package="hik_camera_ros2_driver",
+                plugin="hik_camera_ros2_driver::HikCameraRos2DriverNode",
+                name="hik_camera_ros2_driver",
+                parameters=[configured_params],
+            ),
             ComposableNode(
                 package=full_detector_name,
                 plugin=full_detector_plugin,
