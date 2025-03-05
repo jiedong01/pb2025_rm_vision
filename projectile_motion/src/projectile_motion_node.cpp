@@ -22,9 +22,8 @@
 
 namespace projectile_motion
 {
-
-ProjectileMotionNode::ProjectileMotionNode(rclcpp::NodeOptions options)
-: Node("projectile_motion_node", options.use_intra_process_comms(true))
+ProjectileMotionNode::ProjectileMotionNode(const rclcpp::NodeOptions & options)
+: Node("projectile_motion_node", options)
 {
   offset_pitch_ = this->declare_parameter("projectile.offset_pitch", 0.0);
   offset_yaw_ = this->declare_parameter("projectile.offset_yaw", 0.0);

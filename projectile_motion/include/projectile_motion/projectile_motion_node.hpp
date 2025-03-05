@@ -42,7 +42,7 @@ public:
   using tf2_filter = tf2_ros::MessageFilter<auto_aim_interfaces::msg::Target>;
 
 public:
-  explicit ProjectileMotionNode(rclcpp::NodeOptions options);
+  explicit ProjectileMotionNode(const rclcpp::NodeOptions & options);
 
 private:
   void targetCallback(const auto_aim_interfaces::msg::Target::SharedPtr msg);

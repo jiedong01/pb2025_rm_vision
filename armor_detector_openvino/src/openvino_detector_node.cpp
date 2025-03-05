@@ -23,12 +23,13 @@
 
 namespace rm_auto_aim
 {
-ArmorDetectorOpenvinoNode::ArmorDetectorOpenvinoNode(rclcpp::NodeOptions options)
-: Node("detector_openvino_node", options.use_intra_process_comms(true))
+ArmorDetectorOpenvinoNode::ArmorDetectorOpenvinoNode(const rclcpp::NodeOptions & options)
+: Node("armor_detector_openvino", options)
 {
-  RCLCPP_INFO(this->get_logger(), "Initializing detect node");
+  RCLCPP_INFO(
+    this->get_logger(), "Initializing armor_detector_openvino with intra-process communication %s",
+    options.use_intra_process_comms() ? "enabled" : "disabled");
 
-  RCLCPP_INFO(this->get_logger(), "Initializing OpenVINO");
   detector_ = nullptr;
   this->initDetector();
   if (!detector_) {

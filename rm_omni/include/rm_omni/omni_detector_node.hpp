@@ -38,7 +38,7 @@ namespace rm_omni
 class OmniNode : public rclcpp::Node
 {
 public:
-  explicit OmniNode(rclcpp::NodeOptions options);
+  explicit OmniNode(const rclcpp::NodeOptions & options);
 
 private:
   void initDetector();

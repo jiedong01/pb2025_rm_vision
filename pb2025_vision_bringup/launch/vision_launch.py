@@ -137,24 +137,28 @@ def launch_setup(context: LaunchContext) -> list:
                 plugin="hik_camera_ros2_driver::HikCameraRos2DriverNode",
                 name="hik_camera_ros2_driver",
                 parameters=[configured_params],
+                extra_arguments=[{"use_intra_process_comms": True}],
             ),
             ComposableNode(
                 package=full_detector_name,
                 plugin=full_detector_plugin,
                 name=full_detector_name,
                 parameters=[configured_params],
+                extra_arguments=[{"use_intra_process_comms": True}],
             ),
             ComposableNode(
                 package="armor_tracker",
                 plugin="rm_auto_aim::ArmorTrackerNode",
                 name="armor_tracker",
                 parameters=[configured_params],
+                extra_arguments=[{"use_intra_process_comms": True}],
             ),
             ComposableNode(
                 package="projectile_motion",
                 plugin="projectile_motion::ProjectileMotionNode",
                 name="projectile_motion",
                 parameters=[configured_params],
+                extra_arguments=[{"use_intra_process_comms": True}],
             ),
         ],
     )

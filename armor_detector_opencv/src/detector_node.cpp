@@ -28,7 +28,9 @@ namespace rm_auto_aim
 ArmorDetectorOpencvNode::ArmorDetectorOpencvNode(const rclcpp::NodeOptions & options)
 : Node("armor_detector_opencv", options)
 {
-  RCLCPP_INFO(this->get_logger(), "Starting DetectorNode!");
+  RCLCPP_INFO(
+    this->get_logger(), "Initializing armor_detector_opencv with intra-process communication %s",
+    options.use_intra_process_comms() ? "enabled" : "disabled");
 
   // Detector
   detector_ = initDetector();

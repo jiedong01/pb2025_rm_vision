@@ -21,9 +21,7 @@
 
 namespace rm_omni
 {
-
-OmniNode::OmniNode(rclcpp::NodeOptions options)
-: Node("omni_detector_node", options.use_intra_process_comms(true))
+OmniNode::OmniNode(const rclcpp::NodeOptions & options) : Node("omni_detector_node", options)
 {
   RCLCPP_INFO(this->get_logger(), "Initializing omni node");
 

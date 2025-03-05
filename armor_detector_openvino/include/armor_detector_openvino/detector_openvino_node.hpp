@@ -38,7 +38,7 @@ namespace rm_auto_aim
 class ArmorDetectorOpenvinoNode : public rclcpp::Node
 {
 public:
-  explicit ArmorDetectorOpenvinoNode(rclcpp::NodeOptions options);
+  explicit ArmorDetectorOpenvinoNode(const rclcpp::NodeOptions & options);
 
 private:
   void initDetector();

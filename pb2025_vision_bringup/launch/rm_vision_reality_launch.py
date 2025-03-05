@@ -56,8 +56,8 @@ def generate_launch_description():
 
     declare_detector_cmd = DeclareLaunchArgument(
         "detector",
-        default_value="",
-        description="Type of detector to use (e.g., 'openvino', 'tensorrt'). Default is an empty string, which means using the opencv detector",
+        default_value="opencv",
+        description="Type of detector to use (option: 'opencv', 'openvino', 'tensorrt')",
     )
 
     declare_params_file_cmd = DeclareLaunchArgument(
