@@ -135,10 +135,12 @@ void ArmorDetectorOpencvNode::imageCallback(const sensor_msgs::msg::Image::Const
         armor_marker_.id++;
         armor_marker_.scale.y = armor.type == ArmorType::SMALL ? 0.135 : 0.23;
         armor_marker_.pose = armor_msg.pose;
+
         text_marker_.id++;
         text_marker_.pose.position = armor_msg.pose.position;
         text_marker_.pose.position.y -= 0.1;
         text_marker_.text = armor.classfication_result;
+
         armors_msg_.armors.emplace_back(armor_msg);
         marker_array_.markers.emplace_back(armor_marker_);
         marker_array_.markers.emplace_back(text_marker_);
@@ -276,9 +278,26 @@ void ArmorDetectorOpencvNode::destroyDebugPublishers()
 void ArmorDetectorOpencvNode::publishMarkers()
 {
   using Marker = visualization_msgs::msg::Marker;
-  armor_marker_.action = armors_msg_.armors.empty() ? Marker::DELETEALL : Marker::ADD;
-  marker_array_.markers.emplace_back(armor_marker_);
-  marker_pub_->publish(marker_array_);
+  if (armors_msg_.armors.empty()) {
+    // Create delete markers for both namespaces
+    visualization_msgs::msg::MarkerArray delete_markers;
+
+    Marker armor_delete_marker;
+    armor_delete_marker.action = Marker::DELETEALL;
+    armor_delete_marker.ns = "armors";
+    armor_delete_marker.header.stamp = this->now();
+    delete_markers.markers.push_back(armor_delete_marker);
+
+    Marker text_delete_marker;
+    text_delete_marker.action = Marker::DELETEALL;
+    text_delete_marker.ns = "classification";
+    text_delete_marker.header.stamp = this->now();
+    delete_markers.markers.push_back(text_delete_marker);
+
+    marker_pub_->publish(delete_markers);
+  } else {
+    marker_pub_->publish(marker_array_);
+  }
 }
 
 }  // namespace rm_auto_aim
