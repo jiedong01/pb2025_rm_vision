@@ -12,7 +12,6 @@
   <depend>armor_detector_opencv</depend>
   <depend>armor_tracker</depend>
   <depend>projectile_motion</depend>
-  <depend>rm_omni</depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
