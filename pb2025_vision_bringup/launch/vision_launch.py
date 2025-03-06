@@ -103,16 +103,6 @@ def launch_setup(context: LaunchContext) -> list:
                 parameters=[configured_params],
                 arguments=["--ros-args", "--log-level", log_level],
             ),
-            # Node(
-            #     package="armor_tracker_zhengyu",
-            #     executable="armor_tracker_zhengyu_node",
-            #     name="armor_tracker_zhengyu",
-            #     output="screen",
-            #     respawn=use_respawn,
-            #     respawn_delay=2.0,
-            #     parameters=[configured_params],
-            #     arguments=["--ros-args", "--log-level", log_level],
-            # ),
             Node(
                 package="projectile_motion",
                 executable="projectile_motion_node",

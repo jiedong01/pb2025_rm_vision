@@ -52,29 +52,6 @@ armor_tracker:
       tracking_thres: 5
       lost_time_thres: 1.0
 
-armor_tracker_zhengyu:
-  ros__parameters:
-    use_sim_time: true
-    target_frame: chassis
-    max_armor_distance: 15.0
-
-    ekf:
-      sigma2_q_xyz_max: 3.0
-      sigma2_q_xyz_min: 1.0
-      sigma2_q_yaw_max: 6.0
-      sigma2_q_yaw_min: 3.0
-      sigma2_q_r: 40.0
-
-      r_xyz_factor: 0.0006
-      r_yaw: 0.008
-
-    tracker:
-      max_match_distance: 0.5
-      max_match_yaw_diff: 0.8
-
-      tracking_thres: 5
-      lost_time_thres: 1.0
-
 projectile_motion:
   ros__parameters:
     use_sim_time: true

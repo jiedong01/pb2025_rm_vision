@@ -1,13 +1,4 @@
 pull_request_rules:
-  - name: backport to sentry at reviewers discretion
-    conditions:
-      - base=main
-      - "label=backport-sentry"
-    actions:
-      backport:
-        branches:
-          - sentry
-
   - name: delete head branch after merge
     conditions:
       - merged
