@@ -1,7 +1,7 @@
 FROM ros:humble-ros-base
 
 RUN sudo apt update && \
-    sudo apt install python3-pip git-lfs -y && \
+    sudo apt install python3-dev python3-pip git-lfs -y && \
     sudo pip install vcstool2
 
 # create workspace
