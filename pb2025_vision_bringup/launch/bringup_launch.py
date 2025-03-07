@@ -65,7 +65,7 @@ def generate_launch_description():
     colorized_output_envvar = SetEnvironmentVariable("RCUTILS_COLORIZED_OUTPUT", "1")
 
     declare_namespace_cmd = DeclareLaunchArgument(
-        "namespace", default_value="test", description="Top-level namespace"
+        "namespace", default_value="", description="Top-level namespace"
     )
 
     declare_use_sim_time_cmd = DeclareLaunchArgument(
