@@ -40,7 +40,7 @@ armor_detector_openvino:
       subscribe_compressed: false
 
       # Model
-      model_path: $(find-pkg-share armor_detector_openvino)/model/opt-1208-001.onnx
+      model_path: $(find-pkg-share pb2025_vision_bringup)/model/opt-1208-001.onnx
       device_type: "AUTO"
       confidence_threshold: 0.25
       top_k: 128
